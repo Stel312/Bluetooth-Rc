@@ -51,21 +51,17 @@ public class BluetoothScan extends ListFragment {
 
     public List<BluetoothDevice> scanForDevice()
     {
-        ScanSettings scanSettings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .build();
+        ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
 
-        List<ScanFilter> filters = new ArrayList<>();
-        // Optionally, you can add filters to scan for specific devices
+        List<ScanFilter> filters = new ArrayList<>(); // add to list of filters to apply to scan.
+
+
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 1);
         }
         else
-        {
             bluetoothLeScanner.startScan(filters, scanSettings, scanCallback);
-        }
-
         return null;
     }
 

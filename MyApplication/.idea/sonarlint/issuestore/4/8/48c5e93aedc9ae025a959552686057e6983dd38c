@@ -1,6 +1,0 @@
-
-v	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(æ©ŸÎ8İõ÷­ª1
-s
-java:S1450"VRemove the "binding" field and declare it as a local variable in the relevant methods.(¶ÃÊ8ÌÅğ­ª1
-O
-java:S1611'"2Remove the parentheses around the "view" parameter(º±ã8ÏÔî­ª1
