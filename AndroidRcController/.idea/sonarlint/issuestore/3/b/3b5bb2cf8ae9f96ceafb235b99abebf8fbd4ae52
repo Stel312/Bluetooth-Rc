@@ -1,0 +1,23 @@
+
+E
+java:S1604h"(Make this anonymous inner class a lambda(•Àˆ’8¿„ıÈ·1
+~
+java:S1104%"\Make bluetoothAdapter a static final constant or non-public and provide accessors if needed.(Ãñ­Åùÿÿÿÿ8¿„ıÈ·1
+X
+java:S1444%"6Make this "public static bluetoothAdapter" field final(Ãñ­Åùÿÿÿÿ8¿„ıÈ·1
+s
+java:S1450#"VRemove the "binding" field and declare it as a local variable in the relevant methods.(¶ÃÊ8ì„ıÈ·1
+y
+java:S32525"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(üÖ³–ùÿÿÿÿ8õ„ıÈ·1
+l
+java:S1874@"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(Û›ë´øÿÿÿÿ8õ„ıÈ·1
+}
+java:S3923D"[Remove this conditional structure or edit its code blocks so that they're not all the same.(½ï¤ûÿÿÿÿ8ö„ıÈ·1
+S
+java:S2696P"6Make the enclosing method "static" or remove this set.(ü®ª—8÷„ıÈ·1
+`
+java:S1874T">Remove this use of "startActivityForResult"; it is deprecated.(šá±ÿÿÿÿÿ8û„ıÈ·1
+t
+java:S3252U"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(Š“8û„ıÈ·1
+„
+java:S3252k"gUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_LONG".(õ‰¯à8‚…ıÈ·1
