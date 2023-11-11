@@ -6,6 +6,9 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattServer;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothProfile;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,7 +22,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.androidrccontroller.databinding.FragmentSecondBinding;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import kotlin.Pair;
 
@@ -28,6 +33,12 @@ public class SecondFragment extends Fragment {
     private FragmentSecondBinding binding;
     private BluetoothDevice device;
     private BluetoothGatt bluetoothGatt;
+    private BluetoothGattService gattService;
+
+
+
+
+
     private BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
         @Override
         public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
@@ -39,14 +50,20 @@ public class SecondFragment extends Fragment {
             super.onPhyRead(gatt, txPhy, rxPhy, status);
         }
 
+
+        @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
+            if(newState == BluetoothProfile.STATE_CONNECTED)
+                gatt.discoverServices();
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
+            gattService = gatt.getService(UUIDStrings.Service_UUID);
+
         }
 
         @Override
@@ -114,19 +131,22 @@ public class SecondFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @SuppressLint("MissingPermission")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onClick(View view) {
-                if(bluetoothGatt != null)
-                    bluetoothGatt.disconnect();
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-            }
+        binding.buttonSecond.setOnClickListener(view1 -> {
+            if(bluetoothGatt != null)
+                bluetoothGatt.disconnect();
+            NavHostFragment.findNavController(SecondFragment.this)
+                    .navigate(R.id.action_SecondFragment_to_FirstFragment);
         });
+        binding.WriteButtonTest.setOnClickListener(
+                view1 -> {
+                    BluetoothGattCharacteristic bgc = gattService.getCharacteristic(UUIDStrings.uuid1);
+                    bluetoothGatt.writeCharacteristic(bgc, "test".getBytes(), BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+        }
+        );
     }
 
     @Override
