@@ -1,6 +1,7 @@
 package com.android.androidrccontroller;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -70,6 +71,8 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ListView arrayView;
+        MainActivity a = (MainActivity) getActivity();
+        a.getCurrentFragment();
         if(bluetoothAdapter == null) {
             BluetoothManager bm = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
             bluetoothAdapter = bm.getAdapter();

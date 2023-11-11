@@ -8,9 +8,14 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
+import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,22 +34,12 @@ public class SecondFragment extends Fragment {
     private BluetoothDevice device;
     private BluetoothGatt bluetoothGatt;
     private BluetoothGattService gattService;
-
-
+    InputManager inputManager;
+    InputDevice gamepad;
 
 
 
     private BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
-        @Override
-        public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-            super.onPhyUpdate(gatt, txPhy, rxPhy, status);
-        }
-
-        @Override
-        public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-            super.onPhyRead(gatt, txPhy, rxPhy, status);
-        }
-
 
         @SuppressLint("MissingPermission")
         @Override
@@ -70,47 +65,41 @@ public class SecondFragment extends Fragment {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
         }
-
-        @Override
-        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
-            super.onCharacteristicChanged(gatt, characteristic, value);
-        }
-
-        @Override
-        public void onDescriptorRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattDescriptor descriptor, int status, @NonNull byte[] value) {
-            super.onDescriptorRead(gatt, descriptor, status, value);
-        }
-
-        @Override
-        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-            super.onDescriptorWrite(gatt, descriptor, status);
-        }
-
-        @Override
-        public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-            super.onReliableWriteCompleted(gatt, status);
-        }
-
-        @Override
-        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-            super.onReadRemoteRssi(gatt, rssi, status);
-        }
-
-        @Override
-        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-            super.onMtuChanged(gatt, mtu, status);
-        }
-
-        @Override
-        public void onServiceChanged(@NonNull BluetoothGatt gatt) {
-            super.onServiceChanged(gatt);
-        }
     };
 
+    public void onKeydown(int keyCode, KeyEvent event){
+
+    }
+    public void onGenericMotionEvent(MotionEvent event) {
+        if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK &&
+                event.getAction() == MotionEvent.ACTION_MOVE) {
+            // Handle joystick input
+            float x = event.getAxisValue(MotionEvent.AXIS_X);
+            float y = event.getAxisValue(MotionEvent.AXIS_Y);
+
+            // Implement your joystick handling logic here
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         container.removeAllViews();
         binding = FragmentSecondBinding.inflate(inflater, container, false);
+        inputManager = (InputManager) getActivity().getSystemService(Context.INPUT_SERVICE);
+
+        int[] deviceIds = inputManager.getInputDeviceIds();
+
+        for (int deviceId : deviceIds) {
+            gamepad = inputManager.getInputDevice(deviceId);
+            int sources = gamepad.getSources();
+
+            // Check if the device supports game controllers
+            if ((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
+                    (sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) {
+                // This device is a game controller
+                // Implement your controller support logic here
+            }
+        }
+
 
         this.device = getArguments().getParcelable("device", BluetoothDevice.class);
         if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getContext()), android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -129,7 +118,8 @@ public class SecondFragment extends Fragment {
     @SuppressLint("MissingPermission")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        MainActivity a = (MainActivity) getActivity();
+        a.getCurrentFragment();
         binding.buttonSecond.setOnClickListener(view1 -> {
             if(bluetoothGatt != null)
                 bluetoothGatt.disconnect();
