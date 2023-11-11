@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.pm.PackageManager;
@@ -22,11 +21,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.androidrccontroller.databinding.FragmentSecondBinding;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
-
-import kotlin.Pair;
 
 public class SecondFragment extends Fragment {
 
@@ -143,7 +138,7 @@ public class SecondFragment extends Fragment {
         });
         binding.WriteButtonTest.setOnClickListener(
                 view1 -> {
-                    BluetoothGattCharacteristic bgc = gattService.getCharacteristic(UUIDStrings.uuid1);
+                    BluetoothGattCharacteristic bgc = gattService.getCharacteristic(UUIDStrings.MOTOR_UUID);
                     bluetoothGatt.writeCharacteristic(bgc, "test".getBytes(), BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
         }
         );
