@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-#define pwmPin 36
-#define dirPin 18
+#define pwmPin PIN_A0
+#define dirPin PIN3
 
 // put function declarations here:
 int myFunction(int, int);
@@ -19,6 +19,7 @@ void loop() {
   digitalWrite(dirPin,HIGH); // turn in one direction
   analogWrite(pwmPin,200);
   delay(2000);
+  analogWrite(pwmPin,100);
   // put your main code here, to run repeatedly:
   digitalWrite(dirPin,HIGH); // turn in one direction
   analogWrite(pwmPin,0);

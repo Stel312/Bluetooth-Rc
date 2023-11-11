@@ -1,39 +1,0 @@
-
-{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(çßÉÖıÿÿÿÿ8Š€×Ç·1
-X	java:S125"<This block of commented-out lines of code should be removed.(…„Æ÷8œ€×Ç·1
-J
-java:S1185""(Remove this method to simply inherit it.(¡Ğï›üÿÿÿÿ8 €×Ç·1
-E
-java:S1185'"(Remove this method to simply inherit it.(í›Ã…8¡€×Ç·1
-J
-java:S1185,"(Remove this method to simply inherit it.(ª©¼şúÿÿÿÿ8¡€×Ç·1
-q
-java:S1128"TRemove this unused import 'androidx.core.app.ActivityCompat.startActivityForResult'.(ŞÔ§Ü8ªóÇ·1
-[
-java:S1128">Remove this unused import 'android.bluetooth.BluetoothDevice'.(˜¾Ÿü8ªóÇ·1
-Y
-java:S1128	"<Remove this unused import 'android.bluetooth.le.ScanFilter'.(ÕÁÁ´8ªóÇ·1
-[
-java:S1128">Remove this unused import 'android.bluetooth.le.ScanSettings'.(½…Ÿ8ªóÇ·1
-Q
-java:S1128"4Remove this unused import 'android.content.Context'.(©Ê‰è8ŸªóÇ·1
-O
-java:S1128"3Remove this unused import 'android.content.Intent'.(³ğ‹G8ŸªóÇ·1
-P
-java:S1128".Remove this unused import 'android.os.Parcel'.(˜ÂÍóûÿÿÿÿ8ŸªóÇ·1
-O
-java:S1128"2Remove this unused import 'android.os.Parcelable'.(õÃÀ­8ŸªóÇ·1
-U
-java:S1128"8Remove this unused import 'androidx.annotation.NonNull'.(ˆÛúÜ8ŸªóÇ·1
-M
-java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8ŸªóÇ·1
-J
-java:S1068"-Remove this unused "mScanning" private field.(ÊÏÆâ8ş‚òÇ·1
-I
-java:S1068",Remove this unused "mHandler" private field.(€£öò8ş‚òÇ·1
-Q
-java:S1068"/Remove this unused "SCAN_PERIOD" private field.(Åèòâşÿÿÿÿ8ş‚òÇ·1
-S
-java:S1068"6Remove this unused "bluetoothLeScanner" private field.(€¿ã’8ş‚òÇ·1
-M
-java:S1068 "0Remove this unused "scanCallback" private field.(ãĞÙÙ8ÿ‚òÇ·1

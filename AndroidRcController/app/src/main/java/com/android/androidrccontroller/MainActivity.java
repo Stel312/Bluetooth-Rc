@@ -24,6 +24,7 @@ import com.android.androidrccontroller.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     BluetoothManager bluetoothManager;
-    public static BluetoothAdapter bluetoothAdapter;
     private static final int REQUEST_PERMISSIONS = 1;
 
     private void checkAndRequestPermissions() {
@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
         checkAndRequestPermissions();
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 1);
@@ -94,10 +94,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        FirstFragment fragment = new FirstFragment(bluetoothAdapter, this);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, fragment)
-                .commit();
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
