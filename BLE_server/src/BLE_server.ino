@@ -25,7 +25,7 @@ class MyServerCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
     deviceConnected = true;
     Serial.println("Connected");
-  };
+  }
   void onDisconnect(BLEServer* pServer) {
     deviceConnected = false;
     Serial.println("Disconnected");
@@ -33,30 +33,27 @@ class MyServerCallbacks: public BLEServerCallbacks {
   }
 };
 
-class CharCallback: public BLECharacteristicCallbacks {
-
+class ServoCallback: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
       std::string rxValue = pCharacteristic->getValue();
-      if(pCharacteristic->getUUID().toString() == MOTOR_UUID)
-      {
-          if(std::stoi(rxValue) != motor)
-          {
-            motor = std::stoi(rxValue);
-            Serial1.write(motor);
-          }
-
-      }
-      else if(pCharacteristic->getUUID().toString() == SERVO_UUID)
-      {
-        if(std::stoi(rxValue) != servo)
-          {
-            servo = std::stoi(rxValue);
-            Serial1.write(servo);
-          }
-      }
-     
-    }
-
+      Serial.printf("servo: %s \n", rxValue.c_str());
+          
+      
+      //servo = std::stoi(rxValue);
+      //Serial.printf("servo: %f \n", servo);
+      Serial1.write(servo);
+            
+  }
+};
+class MotorCallback: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pCharacteristic) {
+      std::string rxValue = pCharacteristic->getValue();
+      //Serial.printf("motor: %s \n", rxValue.c_str());
+      //motor = std::stoi(rxValue);
+      //Serial.printf("motor: %f \n", motor);
+      //Serial1.write(motor);
+          
+  }
 }; //end of callback
 
 
@@ -64,15 +61,18 @@ void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
   Serial.println("Starting BLE work!");
-  
+  Serial.print("loop() running on core ");
+  Serial.println(xPortGetCoreID());
+
   BLEDevice::init(SERVER_NAME);
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
   pServer->setCallbacks(new MyServerCallbacks);
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(MOTOR_UUID,BLECharacteristic::PROPERTY_READ |BLECharacteristic::PROPERTY_WRITE );
-
-  pCharacteristic->setCallbacks(new CharCallback);
-  pService->createCharacteristic( SERVO_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  BLECharacteristic *pMotor = pService->createCharacteristic(MOTOR_UUID,BLECharacteristic::PROPERTY_READ |BLECharacteristic::PROPERTY_WRITE );
+  pMotor->setCallbacks(new MotorCallback);
+  BLECharacteristic *pServo =  pService->createCharacteristic(SERVO_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  pServo->setCallbacks(new ServoCallback);
+  Serial.println("Created Characteristics");
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();

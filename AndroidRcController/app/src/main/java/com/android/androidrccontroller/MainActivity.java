@@ -42,6 +42,68 @@ public class MainActivity extends AppCompatActivity {
     BluetoothManager bluetoothManager;
     private static final int REQUEST_PERMISSIONS = 1;
     private Fragment fragment;
+
+
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+
+        if(fragment instanceof SecondFragment)
+            ((SecondFragment) fragment).onGenericMotionEvent(event);
+        return super.onGenericMotionEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Handle key events (button presses) here
+        if(fragment instanceof SecondFragment)
+            ((SecondFragment) fragment).onKeydown(keyCode,event);
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void getCurrentFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Get the fragment at the top of the back stack (if any)
+        NavHostFragment navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment_content_main);
+        this.fragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        CheckPerm();
+
+        binding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void CheckPerm() {
+        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        checkAndRequestPermissions();
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 1);
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                System.exit(0);
+                return;
+            }
+        }
+    }
+
     private void checkAndRequestPermissions() {
         String[] permissions = {
                 android.Manifest.permission.BLUETOOTH_CONNECT,
@@ -77,70 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-
-
-        return super.onGenericMotionEvent(event);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // Handle key events (button presses) here
-
-
-        if(fragment!= null && fragment instanceof SecondFragment)
-            ((SecondFragment) fragment).onKeydown(keyCode,event);
-        return super.onKeyDown(keyCode, event);
-    }
-
-    public void getCurrentFragment(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        // Get the fragment at the top of the back stack (if any)
-        NavHostFragment navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment_content_main);
-        this.fragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.toolbar);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
-
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-
-        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        checkAndRequestPermissions();
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                System.exit(0);
-                return;
-            }
-
-        }
-
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override

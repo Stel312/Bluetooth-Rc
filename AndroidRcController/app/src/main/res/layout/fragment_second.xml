@@ -2,9 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/motorScaling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SecondFragment">
+
+    <TextView
+        android:id="@+id/Throttle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/RY"
+        app:layout_constraintTop_toBottomOf="@+id/RY" />
+
+    <TextView
+        android:id="@+id/Brake"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/Throttle"
+        app:layout_constraintTop_toBottomOf="@+id/Throttle" />
 
     <TextView
         android:id="@+id/textview_second"
@@ -29,7 +46,62 @@
         android:id="@+id/WriteButtonTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="Write"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="326dp" />
+        app:layout_constraintBottom_toTopOf="@+id/button_second"
+        tools:layout_editor_absoluteX="172dp" />
+
+    <TextView
+        android:id="@+id/LX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="149dp" />
+
+    <TextView
+        android:id="@+id/LY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/LX"
+        app:layout_constraintTop_toBottomOf="@+id/LX" />
+
+    <TextView
+        android:id="@+id/RX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/LY"
+        app:layout_constraintTop_toBottomOf="@+id/LY" />
+
+    <TextView
+        android:id="@+id/RY"
+        android:layout_width="61dp"
+        android:layout_height="15dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/RX"
+        app:layout_constraintTop_toBottomOf="@+id/RX" />
+
+    <EditText
+        android:id="@+id/steerScaling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="90"
+        app:layout_constraintStart_toStartOf="@+id/Brake"
+        app:layout_constraintTop_toBottomOf="@+id/Brake" />
+
+    <EditText
+        android:id="@+id/MotorScaling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="100"
+        app:layout_constraintTop_toBottomOf="@+id/steerScaling"
+        tools:layout_editor_absoluteX="172dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
