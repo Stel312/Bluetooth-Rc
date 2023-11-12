@@ -36,8 +36,17 @@ class MyServerCallbacks: public BLEServerCallbacks {
 class ServoCallback: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
       std::string rxValue = pCharacteristic->getValue();
-      Serial.printf("servo: %s \n", rxValue.c_str());
-          
+      //uint8_t size = pCharacteristic->getLength();
+      //Serial.println(size);
+      //Serial.printf("value %i",pCharacteristic->getData());
+          int8_t   data1 = rxValue[0];
+          uint8_t  data2 = rxValue[1];
+
+            // Display or process the received data as needed
+            Serial.print("Received Data: ");
+            Serial.print(data1);
+            Serial.print(", ");
+            Serial.println(data2);
       
       //servo = std::stoi(rxValue);
       //Serial.printf("servo: %f \n", servo);
@@ -45,17 +54,6 @@ class ServoCallback: public BLECharacteristicCallbacks {
             
   }
 };
-class MotorCallback: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
-      std::string rxValue = pCharacteristic->getValue();
-      //Serial.printf("motor: %s \n", rxValue.c_str());
-      //motor = std::stoi(rxValue);
-      //Serial.printf("motor: %f \n", motor);
-      //Serial1.write(motor);
-          
-  }
-}; //end of callback
-
 
 void setup() {
   Serial.begin(9600);
@@ -68,9 +66,7 @@ void setup() {
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
   pServer->setCallbacks(new MyServerCallbacks);
-  BLECharacteristic *pMotor = pService->createCharacteristic(MOTOR_UUID,BLECharacteristic::PROPERTY_READ |BLECharacteristic::PROPERTY_WRITE );
-  pMotor->setCallbacks(new MotorCallback);
-  BLECharacteristic *pServo =  pService->createCharacteristic(SERVO_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  BLECharacteristic *pServo =  pService->createCharacteristic(SERVO_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE_NR);
   pServo->setCallbacks(new ServoCallback);
   Serial.println("Created Characteristics");
   pService->start();
@@ -85,5 +81,5 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(2000);
+  //delay(1000);
 }

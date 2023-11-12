@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -37,30 +38,34 @@ import java.util.concurrent.TimeUnit;
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
-    private BluetoothDevice device;
     private BluetoothGatt bluetoothGatt;
-    private BluetoothGattService gattService;
     private BluetoothGattCharacteristic servo;
     private BluetoothGattCharacteristic motor;
-    InputManager inputManager;
-    InputDevice gamepad;
 
-    private DecimalFormat df = new DecimalFormat("#.##");
+    private final DecimalFormat df = new DecimalFormat("#.##");
 
-    private BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
+    private final BluetoothGattCallback bluetoothGattCallback = new BluetoothGattCallback() {
 
         @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
-            if(newState == BluetoothProfile.STATE_CONNECTED)
+            if (newState == BluetoothProfile.STATE_CONNECTED)
+            {
+                gatt.setPreferredPhy(BluetoothDevice.PHY_LE_2M_MASK, BluetoothDevice.PHY_LE_2M_MASK, BluetoothDevice.PHY_OPTION_NO_PREFERRED);
                 gatt.discoverServices();
+            }
+            else if(newState == BluetoothProfile.STATE_DISCONNECTED)
+            {
+                NavHostFragment.findNavController(SecondFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+            }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
-            gattService = gatt.getService(UUIDStrings.Service_UUID);
+            BluetoothGattService gattService = gatt.getService(UUIDStrings.Service_UUID);
             servo = gattService.getCharacteristic(UUIDStrings.SERVO_UUID);
             motor = gattService.getCharacteristic(UUIDStrings.MOTOR_UUID);
 
@@ -77,15 +82,14 @@ public class SecondFragment extends Fragment {
         }
     };
 
-    public void onKeydown(int keyCode, KeyEvent event){
+    public void onKeydown(int keyCode, KeyEvent event) {
     }
 
     @SuppressLint("MissingPermission")
     public void onGenericMotionEvent(@NonNull MotionEvent event) {
-        int source = event.getSource();
 
         if (bluetoothGatt != null && servo != null
-        && motor != null) {
+                && motor != null) {
             // Handle joystick input
             float rx = event.getAxisValue(MotionEvent.AXIS_Z);
             float ry = event.getAxisValue(MotionEvent.AXIS_RZ);
@@ -94,33 +98,18 @@ public class SecondFragment extends Fragment {
             float throttle = event.getAxisValue(MotionEvent.AXIS_GAS);
             float brake = event.getAxisValue(MotionEvent.AXIS_BRAKE);
             float intMotor = 0;
-            if(throttle > 0.1f)
+            if (throttle > 0.1f)
                 intMotor = throttle;
             else if (brake > 0.1f)
                 intMotor = -brake;
             else
                 intMotor = 0;
-            String s  = df.format(intMotor * Integer.parseInt(binding.MotorScaling.getText().toString()));
-            s =s + df.format(90 + x * Integer.parseInt(binding.steerScaling.getText().toString()));
+            float f  = Float.parseFloat(df.format(intMotor * Integer.parseInt(binding.MotorScaling.getText().toString())));
+            float f1  = Float.parseFloat(df.format(90 + x * Integer.parseInt(binding.steerScaling.getText().toString())));
 
-            /*JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("motor", df.format(intMotor * Integer.parseInt(binding.MotorScaling.getText().toString())));
-                jsonObject.put("servo", df.format(90 + x * Integer.parseInt(binding.steerScaling.getText().toString())));
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }*/
+            byte[] b = new byte[]{(byte) f, (byte) f1};
+            bluetoothGatt.writeCharacteristic(servo, b, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
 
-            bluetoothGatt.writeCharacteristic(servo, s.getBytes(), BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-
-            /*try {
-                TimeUnit.MILLISECONDS.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            bluetoothGatt.writeCharacteristic(motor,
-                    df.format(intMotor * Integer.parseInt(binding.MotorScaling.getText().toString())).getBytes(),
-                    BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);*/
             binding.LX.setText("LX: " + x);
             binding.LY.setText("LY: " + y);
             binding.RX.setText("RX: " + rx);
@@ -132,56 +121,43 @@ public class SecondFragment extends Fragment {
             // Implement your joystick handling logic here
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, Bundle savedInstanceState) {
+        BluetoothDevice device;
         container.removeAllViews();
         binding = FragmentSecondBinding.inflate(inflater, container, false);
-        inputManager = (InputManager) getActivity().getSystemService(Context.INPUT_SERVICE);
+        device = getArguments().getParcelable("device", BluetoothDevice.class);
+        ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), android.Manifest.permission.BLUETOOTH_CONNECT);
+        this.bluetoothGatt = device.connectGatt(getContext(), true, bluetoothGattCallback);
+        bluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+        bluetoothGatt.requestMtu(50);
 
-        int[] deviceIds = inputManager.getInputDeviceIds();
-
-        for (int deviceId : deviceIds) {
-            gamepad = inputManager.getInputDevice(deviceId);
-            int sources = gamepad.getSources();
-
-            if ((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
-                    (sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK) {
-            }
-        }
-
-
-        this.device = getArguments().getParcelable("device", BluetoothDevice.class);
-        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getContext()), android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-        }
-        this.bluetoothGatt = this.device.connectGatt(getContext(), true, bluetoothGattCallback);
         return binding.getRoot();
     }
 
     @SuppressLint("MissingPermission")
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         MainActivity a = (MainActivity) getActivity();
+        assert a != null;
         a.getCurrentFragment();
         binding.buttonSecond.setOnClickListener(view1 -> {
-            if(bluetoothGatt != null)
+            if (bluetoothGatt != null )
                 bluetoothGatt.disconnect();
             NavHostFragment.findNavController(SecondFragment.this)
                     .navigate(R.id.action_SecondFragment_to_FirstFragment);
         });
-
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        if (bluetoothGatt != null)
+            bluetoothGatt.disconnect();
     }
 
 }

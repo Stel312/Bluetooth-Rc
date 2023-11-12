@@ -88,6 +88,7 @@ public class FirstFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mHandler = new Handler();
@@ -106,12 +107,6 @@ public class FirstFragment extends Fragment {
 
             navController.navigate(R.id.action_FirstFragment_to_SecondFragment, b);
         });
-    }
-
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
     }
 
     @SuppressLint("MissingPermission")
@@ -138,7 +133,6 @@ public class FirstFragment extends Fragment {
                 bluetoothLeScanner.stopScan(scanCallback);
 
             }, SCAN_PERIOD);
-
             mScanning = true;
             bluetoothLeScanner.startScan(filters, scanSettings, scanCallback);
         } else {
