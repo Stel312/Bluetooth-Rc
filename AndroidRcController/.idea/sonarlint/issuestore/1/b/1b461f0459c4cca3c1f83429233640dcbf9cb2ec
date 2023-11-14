@@ -1,0 +1,21 @@
+
+s
+java:S1104"XMake Service_UUID a static final constant or non-public and provide accessors if needed.(‰Áûúùÿÿÿÿ
+l
+java:S1104"VMake MOTOR_UUID a static final constant or non-public and provide accessors if needed.(¶ïíü
+q
+java:S1104"VMake SERVO_UUID a static final constant or non-public and provide accessors if needed.(ŞŞøÅşÿÿÿÿ
+M
+java:S1444"2Make this "public static Service_UUID" field final(‰Áûúùÿÿÿÿ
+F
+java:S1444"0Make this "public static MOTOR_UUID" field final(¶ïíü
+K
+java:S1444"0Make this "public static SERVO_UUID" field final(ŞŞøÅşÿÿÿÿ
+r
+java:S3008"WRename this field "Service_UUID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‰Áûúùÿÿÿÿ
+k
+java:S3008"URename this field "MOTOR_UUID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶ïíü
+p
+java:S3008"URename this field "SERVO_UUID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŞŞøÅşÿÿÿÿ
+U
+java:S1118":Add a private constructor to hide the implicit public one.(­í‘¾üÿÿÿÿ

@@ -11,3 +11,5 @@ P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 t
 Dapp/src/main/java/com/android/androidrccontroller/FirstFragment.java,1\4\14b7aa9ae8196927448e876dafce062a5e9f1bdc
+r
+Bapp/src/main/java/com/android/androidrccontroller/UUIDStrings.java,1\b\1b461f0459c4cca3c1f83429233640dcbf9cb2ec

@@ -1,5 +1,7 @@
 package com.android.androidrccontroller;
 
+import android.app.Activity;
+import android.app.GameManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -11,6 +13,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -30,6 +34,7 @@ import com.android.androidrccontroller.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
     BluetoothManager bluetoothManager;
     private static final int REQUEST_PERMISSIONS = 1;
     private Fragment fragment;
-
-
-
+    private Thread gamepadThread;
+    private Handler gamepadThreadHandler;
+    private InputMethodManager inputMethodManager;
     @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
+    public boolean dispatchGenericMotionEvent(MotionEvent event) {
         if(fragment instanceof SecondFragment)
             ((SecondFragment) fragment).onGenericMotionEvent(event);
         return super.onGenericMotionEvent(event);
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle key events (button presses) here
         if(fragment instanceof SecondFragment)
             ((SecondFragment) fragment).onKeydown(keyCode,event);
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -66,6 +72,17 @@ public class MainActivity extends AppCompatActivity {
         // Get the fragment at the top of the back stack (if any)
         NavHostFragment navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment_content_main);
         this.fragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+    }
+    public void updateVars()
+    {
+        if(fragment instanceof SecondFragment)
+        {
+            inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            int[] deviceList = InputDevice.getDeviceIds();
+            //InputDevice inputDevice = InputDevice.getDevice(InputDevice.SOURCE_GAMEPAD);
+            gamepadThreadHandler = new Handler(Looper.getMainLooper());
+            startBackgroundThread();
+        }
     }
 
     @Override
@@ -85,7 +102,54 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show()
             );
     }
+    private void handleGamepadEvents() {
+        // Get the InputManager
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
+        // Get a list of all input device IDs
+        int[] deviceIds = InputDevice.getDeviceIds();
+
+        for (int deviceId : deviceIds) {
+            InputDevice inputDevice = InputDevice.getDevice(deviceId);
+
+            // Check if the device is a gamepad
+            if (inputDevice != null && (inputDevice.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) {
+                // Process generic motion events
+                MotionEvent event = generateGenericMotionEvent(inputDevice);
+                dispatchGenericMotionEvent(event);
+            }
+        }
+    }
+
+    private MotionEvent generateGenericMotionEvent(InputDevice inputDevice) {
+        // Generate a sample generic motion event for demonstration
+        long now = System.currentTimeMillis();
+        MotionEvent event = MotionEvent.obtain(
+                now, now,
+                MotionEvent.ACTION_MOVE,
+                0.5f, 0.5f, 0
+        );
+        event.setSource(inputDevice.getId());
+        return event;
+    }
+
+    private void startBackgroundThread() {
+        // Create a new thread
+        gamepadThread = new Thread(() -> {
+            // Perform background tasks here
+            // If you need to update the UI from the background thread, use a Handler
+            // Update UI components here
+            gamepadThreadHandler.postDelayed(this::handleGamepadEvents, 100);
+        });
+
+        // Start the thread
+        gamepadThread.start();
+    }
+    private void  stopBackgroundThread()
+    {
+        if (gamepadThread != null && gamepadThread.isAlive())
+            gamepadThread.stop();
+    }
     private void CheckPerm() {
         bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         checkAndRequestPermissions();

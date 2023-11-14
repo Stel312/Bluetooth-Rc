@@ -36,9 +36,6 @@ class MyServerCallbacks: public BLEServerCallbacks {
 class ServoCallback: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
       std::string rxValue = pCharacteristic->getValue();
-      //uint8_t size = pCharacteristic->getLength();
-      //Serial.println(size);
-      //Serial.printf("value %i",pCharacteristic->getData());
           int8_t   data1 = rxValue[0];
           uint8_t  data2 = rxValue[1];
 
@@ -47,17 +44,14 @@ class ServoCallback: public BLECharacteristicCallbacks {
             Serial.print(data1);
             Serial.print(", ");
             Serial.println(data2);
-      
-      //servo = std::stoi(rxValue);
-      //Serial.printf("servo: %f \n", servo);
-      Serial1.write(servo);
-            
+      Serial2.write(data1);         
+      Serial2.write(data2);
   }
 };
 
 void setup() {
   Serial.begin(9600);
-  Serial1.begin(9600);
+  Serial2.begin(9600);
   Serial.println("Starting BLE work!");
   Serial.print("loop() running on core ");
   Serial.println(xPortGetCoreID());

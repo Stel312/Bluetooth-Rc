@@ -1,23 +1,35 @@
 
-E
-java:S1604f"(Make this anonymous inner class a lambda(•Àˆ’8È¦Õø»1
-~
-java:S1104#"\Make bluetoothAdapter a static final constant or non-public and provide accessors if needed.(Ãñ­Åùÿÿÿÿ8Æ†Şè·1
-X
-java:S1444#"6Make this "public static bluetoothAdapter" field final(Ãñ­Åùÿÿÿÿ8Æ†Şè·1
 s
-java:S1450!"VRemove the "binding" field and declare it as a local variable in the relevant methods.(¶ÃÊ8ÿ†Şè·1
-y
-java:S32523"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(üÖ³–ùÿÿÿÿ8ˆ‡Şè·1
-l
-java:S1874>"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(Û›ë´øÿÿÿÿ8‰‡Şè·1
-}
-java:S3923B"[Remove this conditional structure or edit its code blocks so that they're not all the same.(½ï¤ûÿÿÿÿ8Š‡Şè·1
-S
-java:S2696N"6Make the enclosing method "static" or remove this set.(ü®ª—8‹‡Şè·1
+java:S1450."VRemove the "binding" field and declare it as a local variable in the relevant methods.(¶ÃÊ8³—Ñı¼1
+~
+java:S14504"aRemove the "inputMethodManager" field and declare it as a local variable in the relevant methods.(É÷Âı8³—Ñı¼1
 `
-java:S1874R">Remove this use of "startActivityForResult"; it is deprecated.(šá±ÿÿÿÿÿ8‡Şè·1
-t
-java:S3252S"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(Š“8‡Şè·1
+java:S1854Q">Remove this useless assignment to local variable "deviceList".(§õ°éÿÿÿÿÿ8À—Ñı¼1
+Q
+java:S1481Q"/Remove this unused "deviceList" local variable.(§õ°éÿÿÿÿÿ8À—Ñı¼1
+]	java:S125R"<This block of commented-out lines of code should be removed.(ø»°²şÿÿÿÿ8À—Ñı¼1
 „
-java:S3252i"gUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_LONG".(õ‰¯à8¡àÉø»1
+java:S3252e"gUse static access with "com.google.android.material.snackbar.BaseTransientBottomBar" for "LENGTH_LONG".(õ‰¯à8Ì—Ñı¼1
+\
+java:S1854k"@Remove this useless assignment to local variable "inputManager".(”ô÷h8Í—Ñı¼1
+M
+java:S1481k"1Remove this unused "inputManager" local variable.(”ô÷h8Î—Ñı¼1
+J
+java:S1602Š",Remove useless curly braces around statement(³ÿÉÅ8Ò—Ñı¼1
+O
+java:S1874—",Remove this use of "stop"; it is deprecated.(Äğã™ûÿÿÿÿ8Ó—Ñı¼1
+p	java:S100™"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŞË›ùıÿÿÿÿ8Ó—Ñı¼1
+9
+java:S3626¢"Remove this redundant jump.(ûÁİ…8Ô—Ñı¼1
+a
+java:S1874Ÿ">Remove this use of "startActivityForResult"; it is deprecated.(šá±ÿÿÿÿÿ8Ø—Ñı¼1
+z
+java:S3252´"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(üÖ³–ùÿÿÿÿ8Ú—Ñı¼1
+m
+java:S1874¿"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(Û›ë´øÿÿÿÿ8Ú—Ñı¼1
+~
+java:S3923Ã"[Remove this conditional structure or edit its code blocks so that they're not all the same.(½ï¤ûÿÿÿÿ8Û—Ñı¼1
+S
+java:S10684"6Remove this unused "inputMethodManager" private field.(É÷Âı8İ—Ñı¼1
+W
+java:S1144”"9Remove this unused private "stopBackgroundThread" method.(©¨ï8İ—Ñı¼1

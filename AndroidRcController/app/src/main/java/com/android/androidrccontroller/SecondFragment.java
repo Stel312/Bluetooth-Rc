@@ -40,7 +40,6 @@ public class SecondFragment extends Fragment {
     private FragmentSecondBinding binding;
     private BluetoothGatt bluetoothGatt;
     private BluetoothGattCharacteristic servo;
-    private BluetoothGattCharacteristic motor;
 
     private final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -54,6 +53,7 @@ public class SecondFragment extends Fragment {
             {
                 gatt.setPreferredPhy(BluetoothDevice.PHY_LE_2M_MASK, BluetoothDevice.PHY_LE_2M_MASK, BluetoothDevice.PHY_OPTION_NO_PREFERRED);
                 gatt.discoverServices();
+                gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
             }
             else if(newState == BluetoothProfile.STATE_DISCONNECTED)
             {
@@ -67,7 +67,6 @@ public class SecondFragment extends Fragment {
             super.onServicesDiscovered(gatt, status);
             BluetoothGattService gattService = gatt.getService(UUIDStrings.Service_UUID);
             servo = gattService.getCharacteristic(UUIDStrings.SERVO_UUID);
-            motor = gattService.getCharacteristic(UUIDStrings.MOTOR_UUID);
 
         }
 
@@ -80,16 +79,17 @@ public class SecondFragment extends Fragment {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
         }
+
     };
 
     public void onKeydown(int keyCode, KeyEvent event) {
+
     }
 
     @SuppressLint("MissingPermission")
     public void onGenericMotionEvent(@NonNull MotionEvent event) {
 
-        if (bluetoothGatt != null && servo != null
-                && motor != null) {
+        if (bluetoothGatt != null && servo != null) {
             // Handle joystick input
             float rx = event.getAxisValue(MotionEvent.AXIS_Z);
             float ry = event.getAxisValue(MotionEvent.AXIS_RZ);
@@ -117,7 +117,8 @@ public class SecondFragment extends Fragment {
             binding.Throttle.setText("Throttle: " + throttle);
             binding.Brake.setText("Brake: " + brake);
 
-
+            // Recycle the MotionEvent to avoid memory leaks
+            //event.recycle();
             // Implement your joystick handling logic here
         }
     }
@@ -143,6 +144,7 @@ public class SecondFragment extends Fragment {
         MainActivity a = (MainActivity) getActivity();
         assert a != null;
         a.getCurrentFragment();
+        a.updateVars();
         binding.buttonSecond.setOnClickListener(view1 -> {
             if (bluetoothGatt != null )
                 bluetoothGatt.disconnect();

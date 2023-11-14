@@ -37,7 +37,7 @@ public class FirstFragment extends Fragment {
     private Handler mHandler;
 
     // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 1000;
+    private static final long SCAN_PERIOD = 4000;
     private BluetoothLeScanner bluetoothLeScanner;
     private BluetoothAdapter bluetoothAdapter;
     private final List<String> deviceListName = new ArrayList<>();
