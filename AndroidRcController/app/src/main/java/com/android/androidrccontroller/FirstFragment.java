@@ -1,7 +1,6 @@
 package com.android.androidrccontroller;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -23,7 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.androidrccontroller.databinding.FragmentFirstBinding;
 
@@ -43,7 +41,7 @@ public class FirstFragment extends Fragment {
     private final List<String> deviceListName = new ArrayList<>();
     private final List<BluetoothDevice> deviceList = new ArrayList<>();
     private ArrayAdapter<String> arrayAdapter;
-    private NavController navController;
+
     private final ScanCallback scanCallback = new ScanCallback() {
         @SuppressLint("MissingPermission")
         @Override
@@ -62,16 +60,12 @@ public class FirstFragment extends Fragment {
     };
 
 
-    public FirstFragment() {
-
-    }
-
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ListView arrayView;
         MainActivity a = (MainActivity) getActivity();
+        assert a != null;
         a.getCurrentFragment();
         if(bluetoothAdapter == null) {
             BluetoothManager bm = (BluetoothManager) getActivity().getSystemService(Context.BLUETOOTH_SERVICE);
@@ -81,7 +75,7 @@ public class FirstFragment extends Fragment {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         if (getContext() != null)
         {
-            arrayAdapter = new ArrayAdapter(getContext(), R.layout.textlayer, R.id.device, deviceListName);
+            arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.textlayer, R.id.device, deviceListName);
             arrayView  = binding.bluetoothList;
             arrayView.setAdapter(arrayAdapter);
         }
@@ -90,6 +84,7 @@ public class FirstFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        NavController navController;
         super.onViewCreated(view, savedInstanceState);
         mHandler = new Handler();
         navController = Navigation.findNavController(view);
@@ -116,22 +111,18 @@ public class FirstFragment extends Fragment {
         binding = null;
         if(scanning())
             bluetoothLeScanner.stopScan(scanCallback);
-
     }
-
 
     @SuppressLint("MissingPermission")
     public void scanForDevice()
     {
         List<ScanFilter> filters = new ArrayList<>(); // add to list of filters to apply to scan.
         ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
-
         if (bluetoothAdapter.isEnabled()) {
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(() -> {
                 mScanning = false;
                 bluetoothLeScanner.stopScan(scanCallback);
-
             }, SCAN_PERIOD);
             mScanning = true;
             bluetoothLeScanner.startScan(filters, scanSettings, scanCallback);

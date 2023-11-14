@@ -5,15 +5,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.hardware.input.InputManager;
 import android.os.Bundle;
-import android.text.Editable;
-import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,19 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.androidrccontroller.databinding.FragmentSecondBinding;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.DecimalFormat;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class SecondFragment extends Fragment {
 
@@ -86,7 +75,7 @@ public class SecondFragment extends Fragment {
 
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint({"MissingPermission", "SetTextI18n"})
     public void onGenericMotionEvent(@NonNull MotionEvent event) {
 
         if (bluetoothGatt != null && servo != null) {
@@ -116,10 +105,6 @@ public class SecondFragment extends Fragment {
             binding.RY.setText("RY: " + ry);
             binding.Throttle.setText("Throttle: " + throttle);
             binding.Brake.setText("Brake: " + brake);
-
-            // Recycle the MotionEvent to avoid memory leaks
-            //event.recycle();
-            // Implement your joystick handling logic here
         }
     }
 
@@ -128,6 +113,7 @@ public class SecondFragment extends Fragment {
         BluetoothDevice device;
         container.removeAllViews();
         binding = FragmentSecondBinding.inflate(inflater, container, false);
+        assert getArguments() != null;
         device = getArguments().getParcelable("device", BluetoothDevice.class);
         ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), android.Manifest.permission.BLUETOOTH_CONNECT);
         this.bluetoothGatt = device.connectGatt(getContext(), true, bluetoothGattCallback);
@@ -144,7 +130,6 @@ public class SecondFragment extends Fragment {
         MainActivity a = (MainActivity) getActivity();
         assert a != null;
         a.getCurrentFragment();
-        a.updateVars();
         binding.buttonSecond.setOnClickListener(view1 -> {
             if (bluetoothGatt != null )
                 bluetoothGatt.disconnect();

@@ -1,25 +1,17 @@
 package com.android.androidrccontroller;
 
-import android.app.Activity;
-import android.app.GameManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Handler;
-import android.os.Looper;
-import android.view.InputDevice;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,12 +23,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.android.androidrccontroller.databinding.ActivityMainBinding;
+import com.google.android.material.snackbar.Snackbar;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,12 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    BluetoothManager bluetoothManager;
     private static final int REQUEST_PERMISSIONS = 1;
     private Fragment fragment;
-    private Thread gamepadThread;
-    private Handler gamepadThreadHandler;
-    private InputMethodManager inputMethodManager;
     @Override
     public boolean dispatchGenericMotionEvent(MotionEvent event) {
         if(fragment instanceof SecondFragment)
@@ -62,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         // Handle key events (button presses) here
         if(fragment instanceof SecondFragment)
             ((SecondFragment) fragment).onKeydown(keyCode,event);
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -72,17 +55,6 @@ public class MainActivity extends AppCompatActivity {
         // Get the fragment at the top of the back stack (if any)
         NavHostFragment navHostFragment = (NavHostFragment) fragmentManager.findFragmentById(R.id.nav_host_fragment_content_main);
         this.fragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-    }
-    public void updateVars()
-    {
-        if(fragment instanceof SecondFragment)
-        {
-            inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            int[] deviceList = InputDevice.getDeviceIds();
-            //InputDevice inputDevice = InputDevice.getDevice(InputDevice.SOURCE_GAMEPAD);
-            gamepadThreadHandler = new Handler(Looper.getMainLooper());
-            startBackgroundThread();
-        }
     }
 
     @Override
@@ -94,64 +66,15 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
         CheckPerm();
-
         binding.fab.setOnClickListener(view ->
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show()
             );
     }
-    private void handleGamepadEvents() {
-        // Get the InputManager
-        InputMethodManager inputManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-        // Get a list of all input device IDs
-        int[] deviceIds = InputDevice.getDeviceIds();
-
-        for (int deviceId : deviceIds) {
-            InputDevice inputDevice = InputDevice.getDevice(deviceId);
-
-            // Check if the device is a gamepad
-            if (inputDevice != null && (inputDevice.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) {
-                // Process generic motion events
-                MotionEvent event = generateGenericMotionEvent(inputDevice);
-                dispatchGenericMotionEvent(event);
-            }
-        }
-    }
-
-    private MotionEvent generateGenericMotionEvent(InputDevice inputDevice) {
-        // Generate a sample generic motion event for demonstration
-        long now = System.currentTimeMillis();
-        MotionEvent event = MotionEvent.obtain(
-                now, now,
-                MotionEvent.ACTION_MOVE,
-                0.5f, 0.5f, 0
-        );
-        event.setSource(inputDevice.getId());
-        return event;
-    }
-
-    private void startBackgroundThread() {
-        // Create a new thread
-        gamepadThread = new Thread(() -> {
-            // Perform background tasks here
-            // If you need to update the UI from the background thread, use a Handler
-            // Update UI components here
-            gamepadThreadHandler.postDelayed(this::handleGamepadEvents, 100);
-        });
-
-        // Start the thread
-        gamepadThread.start();
-    }
-    private void  stopBackgroundThread()
-    {
-        if (gamepadThread != null && gamepadThread.isAlive())
-            gamepadThread.stop();
-    }
     private void CheckPerm() {
-        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         checkAndRequestPermissions();
         BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
         if (!bluetoothAdapter.isEnabled()) {
@@ -175,16 +98,11 @@ public class MainActivity extends AppCompatActivity {
         };
 
         List<String> permissionsToRequest = new ArrayList<>();
-
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+        for (String permission : permissions)
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
                 permissionsToRequest.add(permission);
-            }
-        }
-
-        if (!permissionsToRequest.isEmpty()) {
+        if (!permissionsToRequest.isEmpty())
             ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[0]), REQUEST_PERMISSIONS);
-        }
     }
 
     @Override
