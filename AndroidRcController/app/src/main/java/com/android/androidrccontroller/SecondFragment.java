@@ -56,19 +56,7 @@ public class SecondFragment extends Fragment {
             super.onServicesDiscovered(gatt, status);
             BluetoothGattService gattService = gatt.getService(UUIDStrings.Service_UUID);
             servo = gattService.getCharacteristic(UUIDStrings.SERVO_UUID);
-
         }
-
-        @Override
-        public void onCharacteristicRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value, int status) {
-            super.onCharacteristicRead(gatt, characteristic, value, status);
-        }
-
-        @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicWrite(gatt, characteristic, status);
-        }
-
     };
 
     public void onKeydown(int keyCode, KeyEvent event) {
